@@ -20,10 +20,25 @@ local separator = pandoc.Space()
 if FORMAT == "docx" then -- to be consistent with Pandoc >= 2.10.1
   separator = pandoc.Str("\t")
 end
+local appendix = false
+local appendix_indices = {
+  "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N",
+  "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"
+}
 
 function Header(elem)
   -- If unnumbered
   if (elem.classes:find("unnumbered")) then
+    appendix = (elem.content[1]['c'] == "(APPENDIX)") or (elem.classes:find("bookdown-appendix"))
+    if appendix then
+      section_number_table[1] = 0
+      local new_content = {}
+      for i = 3,#elem.content,1 do
+        table.insert(new_content, 1, elem.content[i])
+      end
+      elem.content = new_content
+      table.insert(elem.classes, 1, "bookdown-appendix")
+    end
     return elem
   end
 
@@ -38,10 +53,24 @@ function Header(elem)
   section_number_table[elem.level] = section_number_table[elem.level] + 1
 
   --- Define section number as string
-  local section_number_string = tostring(section_number_table[elem.level])
-  if elem.level > 1 then
-    for i = elem.level-1,1,-1 do
-      section_number_string = section_number_table[i] .. "." .. section_number_string
+  local secvtion_number_string = ""
+  if elem.level==1 then
+    if appendix then
+      section_number_string = appendix_indices[section_number_table[1]]
+    else
+      section_number_string = section_number_table[1]
+    end
+  else
+    section_number_string = tostring(section_number_table[elem.level])
+    if elem.level > 1 then
+      for i = elem.level-1,2,-1 do
+        section_number_string = section_number_table[i] .. "." .. section_number_string
+      end
+    end
+    if appendix then
+      section_number_string = appendix_indices[section_number_table[1]] .. "." .. section_number_string
+    else
+      section_number_string = section_number_table[1] .. "." .. section_number_string
     end
   end
 
