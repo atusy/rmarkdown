@@ -516,6 +516,28 @@ pandoc_mathjax_args <- function(mathjax,
   args
 }
 
+pandoc_webtex_args <- function(math) {
+  engine <- names(math)
+  url <- math[[1L]]
+
+  if (is.null(url)) {
+    return(NULL)
+  }
+
+  if (identical(math, "webtex") ||
+      identical(c(engine, url), c("webtex", "default"))) {
+    return("--webtex")
+  }
+
+  if (identical(engine, "webtex")) {
+    return(paste0("--webtex=", url))
+  }
+
+  warning("When using webtex, the `math` argument should be specified as",
+          'a string "webtex", a string "default" whose name is "webtex",',
+          'or a URL whose name is "webtex".')
+}
+
 
 pandoc_mathjax_local_path <- function() {
 

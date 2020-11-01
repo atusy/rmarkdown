@@ -38,6 +38,7 @@ md_document <- function(variant = "markdown_strict",
                         toc = FALSE,
                         toc_depth = 3,
                         number_sections = FALSE,
+                        math = NULL,
                         fig_width = 7,
                         fig_height = 5,
                         fig_retina = NULL,
@@ -53,6 +54,9 @@ md_document <- function(variant = "markdown_strict",
 
   # table of contents
   args <- c(args, pandoc_toc_args(toc, toc_depth))
+
+  # math rendering
+  args <- c(args, pandoc_webtex_args(math))
 
   # content includes
   args <- c(args, includes_to_pandoc_args(includes))
