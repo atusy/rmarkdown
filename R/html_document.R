@@ -521,7 +521,13 @@ knitr_options_html <- function(fig_width,
                                keep_md,
                                dev = 'png') {
 
-  opts_chunk <- list(dev = dev,
+  opts_chunk <- list(class.default = list(
+                       source = 'chunk-source',
+                       output = c('chunk-result', 'chunk-output'),
+                       message = c('chunk-result', 'chunk-message'),
+                       warning = c('chunk-result', 'chunk-warning'),
+                       error = c('chunk-result', 'chunk-error')),
+                     dev = dev,
                      dpi = 96,
                      fig.width = fig_width,
                      fig.height = fig_height,
@@ -530,7 +536,18 @@ knitr_options_html <- function(fig_width,
   if (keep_md)
     opts_chunk$fig.retina <- NULL
 
-  knitr_options(opts_chunk = opts_chunk)
+  opts_hooks <- list(class.default = add_default_class)
+
+  knitr_options(opts_chunk = opts_chunk, opts_hooks = opts_hooks)
+}
+
+add_default_class <- function(options) {
+  default <- options$class.default
+  for (nm in names(default)) {
+    key <- paste0("class.", nm)
+    options[[key]] <- c(options[[key]], default[[nm]])
+  }
+  options
 }
 
 themes <- function() {
