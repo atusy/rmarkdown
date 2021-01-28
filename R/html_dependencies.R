@@ -48,7 +48,7 @@ html_dependency_bootstrap <- function(theme) {
     theme <- bslib::bs_add_rules(
       theme, c(
         paste0("h1.title {margin-top: 1.25rem; font-size: 1.15 * $", h1_size, "}"),
-        "pre:not([class]) { background-color: $body-bg }"
+        "pre:not([class]), pre.chunk-result { background-color: $body-bg }"
       )
     )
     return(bslib::bs_theme_dependencies(theme))
@@ -75,7 +75,7 @@ html_dependency_bootstrap <- function(theme) {
        h5 {font-size: 16px;}
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
-       pre:not([class]) { background-color: white }"
+       pre:not([class]), pre.chunk-result { background-color: white }"
     )))
   )
 }
